@@ -2,6 +2,7 @@ package com.ll.mb.global.initData;
 
 import com.ll.mb.domain.book.book.entity.Book;
 import com.ll.mb.domain.book.book.service.BookService;
+import com.ll.mb.domain.cash.cash.entity.CashLog;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.member.member.service.MemberService;
 import com.ll.mb.domain.product.cart.service.CartService;
@@ -42,13 +43,12 @@ public class NotProd {
         Member memberUser2 = memberService.join("user2", "1234").getData();
         Member memberUser3 = memberService.join("user3", "1234").getData();
 
-        Book book1 = bookService.createBook(memberUser1, "책 제목 1", "책 내용 1", 10000);
-        Book book2 = bookService.createBook(memberUser2, "책 제목 2", "책 내용 2", 10000);
-        Book book3 = bookService.createBook(memberUser2, "책 제목 3", "책 내용 3", 10000);
-        Book book4 = bookService.createBook(memberUser3, "책 제목 4", "책 내용 4", 10000);
-        Book book5 = bookService.createBook(memberUser3, "책 제목 5", "책 내용 5", 10000);
-        Book book6 = bookService.createBook(memberUser3, "책 제목 6", "책 내용 6", 10000);
-
+        Book book1 = bookService.createBook(memberUser1, "책 제목 1", "책 내용 1", 10_000);
+        Book book2 = bookService.createBook(memberUser2, "책 제목 2", "책 내용 2", 20_000);
+        Book book3 = bookService.createBook(memberUser2, "책 제목 3", "책 내용 3", 30_000);
+        Book book4 = bookService.createBook(memberUser3, "책 제목 4", "책 내용 4", 40_000);
+        Book book5 = bookService.createBook(memberUser3, "책 제목 5", "책 내용 5", 15_000);
+        Book book6 = bookService.createBook(memberUser3, "책 제목 6", "책 내용 6", 20_000);
         Product product1 = productService.createProduct(book3);
         Product product2 = productService.createProduct(book4);
         Product product3 = productService.createProduct(book5);
@@ -57,5 +57,7 @@ public class NotProd {
         cartService.addItem(memberUser1, product1);
         cartService.addItem(memberUser1, product2);
         cartService.addItem(memberUser1, product3);
+
+        memberService.addCash(memberUser1, 100_000, CashLog.EvenType.충전__무통장입금, memberUser1);
     }
 }
