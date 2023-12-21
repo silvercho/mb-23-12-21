@@ -52,12 +52,18 @@ public class Order extends BaseEntity {
 
     public void setPaymentDone() {
         payDate = LocalDateTime.now();
+        orderItems.stream()
+                .forEach(OrderItem::setPaymentDone);
     }
 
     public void setCancleDone() {
         cancelDate = LocalDateTime.now();
+        orderItems.stream()
+                .forEach(OrderItem::setCancelDone);
     }
     public void setRefundDone() {
         refundDate = LocalDateTime.now();
+        orderItems.stream()
+                .forEach(OrderItem::setRefundDone);
     }
 }
