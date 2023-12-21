@@ -1,5 +1,4 @@
-package com.ll.mb.domain.book.book.entity;
-
+package com.ll.mb.domain.product.cart.entity;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.product.entity.Product;
 import com.ll.mb.global.jpa.BaseEntity;
@@ -17,12 +16,9 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class Book extends BaseEntity {
+public class CartItem extends BaseEntity {
     @ManyToOne
-    private Member author;
+    private Member member;
     @OneToOne
     private Product product;
-    private String title;
-    private String body;
-    private int price;
 }
