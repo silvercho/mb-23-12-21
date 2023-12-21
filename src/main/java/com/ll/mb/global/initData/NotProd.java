@@ -34,6 +34,7 @@ public class NotProd {
     ApplicationRunner initNotProd() {
         return args -> {
             self.work1();
+            self.work2();
         };
     }
 
@@ -71,5 +72,17 @@ public class NotProd {
         long order1PayPrice = order1.calcPayPrice();
 
         orderService.payByCashOnly(order1);
+        memberService.addCash(memberUser3, 150_000, CashLog.EvenType.충전__무통장입금, memberUser3);
+        Order order2 = orderService.createFromCart(memberUser3);
+        orderService.payByCashOnly(order2);
+        orderService.refund(order2);
+    }
+
+    @Transactional
+    public void work2() {
+//        Member memberUser1 = memberService.findByUsername("user1").get();
+//        Product product1 = productService.findById(1L).get();
+//
+//        cartService.addItem(memberUser1, product1);
     }
 }
