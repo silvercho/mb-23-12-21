@@ -76,6 +76,10 @@ public class NotProd {
         Order order2 = orderService.createFromCart(memberUser3);
         orderService.payByCashOnly(order2);
         orderService.refund(order2);
+
+        Order order3 = orderService.createFromCart(memberUser2);
+        orderService.checkCanPay(order3, 55_000);
+        orderService.payByTossPayments(order3, 55_000);
     }
 
     @Transactional
