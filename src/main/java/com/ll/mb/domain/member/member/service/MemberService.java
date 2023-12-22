@@ -1,8 +1,8 @@
 package com.ll.mb.domain.member.member.service;
 
+import com.ll.mb.domain.base.genFile.entity.GenFile;
 import com.ll.mb.domain.base.genFile.service.GenFileService;
 import com.ll.mb.domain.cash.cash.entity.CashLog;
-import com.ll.mb.domain.cash.cash.repository.CashLogRepository;
 import com.ll.mb.domain.cash.cash.service.CashService;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.member.member.repository.MemberRepository;
@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
@@ -23,15 +24,19 @@ import java.util.Optional;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final CashLogRepository cashLogRepository;
     private final CashService cashService;
     private final GenFileService genFileService;
 
     @Transactional
     public RsData<Member> join(String username, String password, String nickname) {
-        return join(username, password, nickname, null);
+        return join(username, password, nickname, "");
     }
 
+    @Transactional
+    public RsData<Member> join(String username, String password, String nickname, MultipartFile profileImg) {
+        String profileImgFilePath = Ut.file.toFile(profileImg, AppConfig.getTempDirPath());
+        return join(username, password, nickname, profileImgFilePath);
+    }
     @Transactional
     public RsData<Member> join(String username, String password, String nickname, String profileImgFilePath) {
         if (findByUsername(username).isPresent()) {
@@ -77,4 +82,17 @@ public class MemberService {
 
         return join(username, "", nickname, filePath);
     }
+    public String getProfileImgUrl(Member member) {
+        return Optional.ofNullable(member)
+                .flatMap(this::findProfileImgUrl)
+                .orElse("https://placehold.co/30x30?text=UU");
+    }
+
+    private Optional<String> findProfileImgUrl(Member member) {
+        return genFileService.findBy(
+                        member.getModelName(), member.getId(), "common", "profileImg", 1
+                )
+                .map(GenFile::getUrl);
+    }
+
 }
