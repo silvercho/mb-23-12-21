@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html layout:decorate="~{global/layout}">
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{global/layout}">
 
 <head>
   <title layout:title-pattern="$CONTENT_TITLE - $LAYOUT_TITLE" th:text="${@appConfig.siteName}"></title>

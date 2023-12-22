@@ -26,7 +26,7 @@ spring:
       client:
         registration:
           kakao:
-            clientId: ON_SECRET
+            clientId: 34be539d9653fa061cd9dca41952b095
             scope: profile_nickname, profile_image
             client-name: Kakao
             authorization-grant-type: authorization_code
@@ -45,6 +45,10 @@ logging:
     org.hibernate.orm.jdbc.extract: TRACE
     org.springframework.transaction.interceptor: TRACE
 custom:
+  temp:
+    dirPath: c:/temp/mb/temp
+  genFile:
+    dirPath: c:/temp/mb
   site:
     name: mb.oa.gg
     baseUrl: "http://localhost:${server.port}"

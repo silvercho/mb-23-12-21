@@ -28,6 +28,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Member extends BaseEntity {
     private String username;
     private String password;
+    private String nickname;
     private long restCash;
 
     @OneToMany(mappedBy = "owner", cascade = ALL, orphanRemoval = true)
