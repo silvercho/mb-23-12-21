@@ -1,4 +1,4 @@
-package com.ll.mb.global.standard.util;
+package com.ll.mb.standard.util;
 
 
 public class Ut {

@@ -1,6 +1,6 @@
 package com.ll.mb.global.jpa;
 
-import com.ll.mb.global.standard.util.Ut;
+import com.ll.mb.standard.util.Ut;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

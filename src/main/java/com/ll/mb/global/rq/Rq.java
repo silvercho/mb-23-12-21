@@ -3,7 +3,6 @@ package com.ll.mb.global.rq;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.global.rsData.RsData;
 import com.ll.mb.global.security.SecurityUser;
-import com.ll.mb.global.standard.util.Ut;
 import com.ll.mb.standard.util.Ut;
 import jakarta.persistence.EntityManager;
 import jakarta.servlet.http.HttpServletRequest;
