@@ -91,4 +91,10 @@ public class Order extends BaseEntity {
         // LocalDateTime 객체를 문자열로 변환
         return getCreateDate().format(formatter) +  (AppConfig.isNotProd() ? "-test-" + UUID.randomUUID().toString() : "") + "__" + getId();
     }
+    public boolean isPayable() {
+        if (payDate != null) return false;
+        if (cancelDate != null) return false;
+
+        return true;
+    }
 }
