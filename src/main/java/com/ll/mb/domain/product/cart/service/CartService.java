@@ -4,7 +4,7 @@ import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.domain.product.cart.repository.CartItemRepository;
 import com.ll.mb.domain.product.product.entity.Product;
-import com.ll.mb.global.exceptions.GlobalException;
+import com.ll.mb.domain.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

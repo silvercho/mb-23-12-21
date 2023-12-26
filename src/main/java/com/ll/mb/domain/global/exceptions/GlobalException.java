@@ -1,4 +1,4 @@
-package com.ll.mb.global.exceptions;
+package com.ll.mb.domain.global.exceptions;
 
 import com.ll.mb.global.rsData.RsData;
 import lombok.Getter;

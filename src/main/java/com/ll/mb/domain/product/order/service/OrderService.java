@@ -7,12 +7,13 @@ import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.domain.product.cart.service.CartService;
 import com.ll.mb.domain.product.order.entity.Order;
 import com.ll.mb.domain.product.order.repository.OrderRepository;
-import com.ll.mb.global.exceptions.GlobalException;
+import com.ll.mb.domain.global.exceptions.GlobalException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -90,6 +91,16 @@ public class OrderService {
         order.setCancleDone();
         order.setRefundDone();
     }
+
+    public void checkCanPay(String orderCode, long pgPayPrice) {
+        Order order = findByCode(orderCode).orElse(null);
+
+        if (order == null)
+            throw new GlobalException("400-1", "존재하지 않는 주문입니다.");
+
+        checkCanPay(order, pgPayPrice);
+    }
+
     public void checkCanPay(Order order, long pgPayPrice) {
         if (!canPay(order, pgPayPrice))
             throw new GlobalException("400-2", "PG결제금액 혹은 예치금이 부족하여 결제할 수 없습니다.");
@@ -99,5 +110,27 @@ public class OrderService {
         long restCash = order.getBuyer().getRestCash();
 
         return order.calcPayPrice() <= restCash + pgPayPrice;
+    }
+    public Optional<Order> findById(long id) {
+        return orderRepository.findById(id);
+    }
+
+    public boolean actorCanSee(Member actor, Order order) {
+        return order.getBuyer().equals(actor);
+    }
+
+    public Optional<Order> findByCode(String code) {
+        long id = Long.parseLong(code.split("__", 2)[1]);
+
+        return findById(id);
+    }
+
+    public void payDone(String code) {
+        Order order = findByCode(code).orElse(null);
+
+        if (order == null)
+            throw new GlobalException("400-1", "존재하지 않는 주문입니다.");
+
+        payDone(order);
     }
 }
