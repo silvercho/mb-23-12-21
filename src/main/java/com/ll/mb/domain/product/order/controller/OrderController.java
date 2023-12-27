@@ -10,6 +10,10 @@ import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -23,6 +27,7 @@ import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
@@ -36,13 +41,18 @@ public class OrderController {
     @GetMapping("/myList")
     @PreAuthorize("isAuthenticated()")
     public String showMyList(
+            @RequestParam(defaultValue = "1") int page,
             Boolean payStatus,
             Boolean cancelStatus,
             Boolean refundStatus
     ) {
-        List<Order> orders = orderService.findByBuyerAndPayStatusAndCancelStatusAndRefundStatus(rq.getMember(), payStatus, cancelStatus, refundStatus);
+        List<Sort.Order> sorts = new ArrayList<>();
+        sorts.add(Sort.Order.desc("id"));
+        Pageable pageable = PageRequest.of(page - 1, 50, Sort.by(sorts));
 
-        rq.setAttribute("orders", orders);
+        Page<Order> orderPage = orderService.search(rq.getMember(), payStatus, cancelStatus, refundStatus, pageable);
+
+        rq.setAttribute("orderPage", orderPage);
 
         return "domain/product/order/myList";
     }
