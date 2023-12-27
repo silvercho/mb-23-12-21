@@ -22,6 +22,15 @@ import java.util.Optional;
 import java.util.UUID;
 
 public class Ut {
+    public static class match {
+        public static boolean isTrue(Boolean bool) {
+            return bool != null && bool;
+        }
+
+        public static boolean isFalse(Boolean bool) {
+            return bool != null && !bool;
+        }
+    }
     public static class date {
         private date() {
         }

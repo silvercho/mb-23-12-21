@@ -1,13 +1,14 @@
 package com.ll.mb.domain.product.order.service;
 
 import com.ll.mb.domain.cash.cash.entity.CashLog;
+import com.ll.mb.domain.global.exceptions.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.member.member.service.MemberService;
 import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.domain.product.cart.service.CartService;
 import com.ll.mb.domain.product.order.entity.Order;
 import com.ll.mb.domain.product.order.repository.OrderRepository;
-import com.ll.mb.domain.global.exceptions.GlobalException;
+import com.ll.mb.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -132,5 +133,19 @@ public class OrderService {
             throw new GlobalException("400-1", "존재하지 않는 주문입니다.");
 
         payDone(order);
+    }
+    public List<Order> findByBuyer(Member buyer) {
+        return orderRepository.findByBuyerOrderByIdDesc(buyer);
+    }
+    public List<Order> findByBuyerAndPayStatusAndCancelStatusAndRefundStatus(Member buyer, Boolean payStatus, Boolean cancelStatus, Boolean refundStatus) {
+        if (Ut.match.isTrue(payStatus) && cancelStatus == null && refundStatus == null) {
+            return orderRepository.findByBuyerAndPayDateIsNotNullOrderByIdDesc(buyer);
+        } else if (payStatus == null && Ut.match.isTrue(cancelStatus) && refundStatus == null) {
+            return orderRepository.findByBuyerAndCancelDateIsNotNullOrderByIdDesc(buyer);
+        } else if (payStatus == null && cancelStatus == null && Ut.match.isTrue(refundStatus)) {
+            return orderRepository.findByBuyerAndRefundDateIsNotNullOrderByIdDesc(buyer);
+        }
+
+        return orderRepository.findByBuyerOrderByIdDesc(buyer);
     }
 }

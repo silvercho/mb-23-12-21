@@ -34,6 +34,7 @@ public class Order extends BaseEntity {
 
     @Builder.Default
     @OneToMany(mappedBy = "order", cascade = ALL, orphanRemoval = true)
+    @ToString.Exclude
     private List<OrderItem> orderItems = new ArrayList<>();
 
     private LocalDateTime payDate; // 결제일
@@ -89,6 +90,29 @@ public class Order extends BaseEntity {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         // LocalDateTime 객체를 문자열로 변환
-        return getCreateDate().format(formatter) +  (AppConfig.isNotProd() ? "-test-" + UUID.randomUUID().toString() : "") + "__" + getId();
+        return getCreateDate().format(formatter) + (AppConfig.isNotProd() ? "-test-" + UUID.randomUUID().toString() : "") + "__" + getId();
+    }
+    public boolean isPayable() {
+        if (payDate != null) return false;
+        if (cancelDate != null) return false;
+
+        return true;
+    }
+    public String getForPrintPayStatus() {
+        if (payDate == null) return "결제대기";
+
+        return "결제완료(" + payDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+    }
+
+    public String getForPrintCancelStatus() {
+        if (cancelDate == null) return "취소가능";
+
+        return "취소완료(" + cancelDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+    }
+
+    public String getForPrintRefundStatus() {
+        if (refundDate == null) return "환불가능";
+
+        return "환불완료(" + refundDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
     }
 }

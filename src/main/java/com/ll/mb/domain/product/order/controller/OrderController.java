@@ -3,16 +3,14 @@ package com.ll.mb.domain.product.order.controller;
 import com.ll.mb.domain.global.exceptions.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.order.entity.Order;
-import com.ll.mb.global.app.AppConfig;
 import com.ll.mb.domain.product.order.service.OrderService;
+import com.ll.mb.global.app.AppConfig;
 import com.ll.mb.global.rq.Rq;
 import lombok.RequiredArgsConstructor;
-
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 @Controller
 @RequestMapping("/order")
@@ -33,6 +32,20 @@ import java.util.Base64;
 public class OrderController {
     private final Rq rq;
     private final OrderService orderService;
+
+    @GetMapping("/myList")
+    @PreAuthorize("isAuthenticated()")
+    public String showMyList(
+            Boolean payStatus,
+            Boolean cancelStatus,
+            Boolean refundStatus
+    ) {
+        List<Order> orders = orderService.findByBuyerAndPayStatusAndCancelStatusAndRefundStatus(rq.getMember(), payStatus, cancelStatus, refundStatus);
+
+        rq.setAttribute("orders", orders);
+
+        return "domain/product/order/myList";
+    }
 
     @GetMapping("/{id}")
     @PreAuthorize("isAuthenticated()")
@@ -56,6 +69,7 @@ public class OrderController {
 
         return "domain/product/order/detail";
     }
+
     @GetMapping("/success")
     @PreAuthorize("isAuthenticated()")
     public String showSuccess() {
@@ -75,6 +89,23 @@ public class OrderController {
     @ResponseBody
     public String showConfirm() {
         return "안녕";
+    }
+
+    @PostMapping("/{id}/payByCash")
+    public String payByCash(@PathVariable long id) {
+        Order order = orderService.findById(id).orElse(null);
+
+        if (order == null) {
+            throw new GlobalException("404", "존재하지 않는 주문입니다.");
+        }
+
+        if (!orderService.canPay(order, 0)) {
+            throw new GlobalException("403", "권한이 없습니다.");
+        }
+
+        orderService.payByCashOnly(order);
+
+        return rq.redirect("/order/" + order.getId(), "결제가 완료되었습니다.");
     }
 
     @PostMapping("/confirm")

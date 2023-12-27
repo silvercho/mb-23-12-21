@@ -14,7 +14,14 @@
   <h1 th:text="|${@appConfig.siteName}|"></h1>
 
   <a class="btn btn-link" href="/">홈</a>
+  <a class="btn btn-link" href="/post/list">글</a>
+  <a class="btn btn-link" href="/product/list">상품</a>
   <a class="btn btn-link" th:if="${@rq.admin}" href="/adm">관리자 홈</a>
+  <a class="btn btn-link" th:if="${@rq.login}" href="/post/pickList">찜 상품</a>
+  <a class="btn btn-link" th:if="${@rq.login}" href="/order/myList">주문</a>
+  <a class="btn btn-link" th:if="${@rq.login}" href="/member/logout">로그아웃</a>
+  <a class="btn btn-link" th:if="${@rq.login}" href="/post/myList">내 글</a>
+  <a class="btn btn-link" th:if="${@rq.login}" href="/post/myList">내 상품</a>
   <a class="btn btn-link" th:if="${@rq.login}" href="/member/logout">로그아웃</a>
   <a class="btn btn-link" th:if="${@rq.logout}" href="/member/login">로그인</a>
   <a class="btn btn-link" th:if="${@rq.logout}" href="/member/join">회원가입</a>

@@ -95,7 +95,7 @@ public class NotProd {
         orderService.checkCanPay(order3, 55_000);
         orderService.payByTossPayments(order3, 55_000);
 
-        memberService.addCash(memberUser4, 50_000, CashLog.EvenType.충전__무통장입금, memberUser4);
+        memberService.addCash(memberUser4,  150_000, CashLog.EvenType.충전__무통장입금, memberUser4);
 
         cartService.addItem(memberUser4, product1);
         cartService.addItem(memberUser4, product2);
