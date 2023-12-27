@@ -88,7 +88,7 @@ public class NotProd {
 
         Order order2 = orderService.createFromCart(memberUser3);
         orderService.payByCashOnly(order2);
-        orderService.refund(order2);
+        orderService.cancel(order2);
 
         memberService.addCash(memberUser2, 150_000, CashLog.EvenType.충전__무통장입금, memberUser2);
 
@@ -115,6 +115,17 @@ public class NotProd {
         cartService.addItem(memberUser5, product2);
 
         Order order6 = orderService.createFromCart(memberUser5);
+
+        orderService.cancel(order6);
+
+        cartService.addItem(memberUser5, product3);
+
+        Order order7 = orderService.createFromCart(memberUser5);
+        orderService.payByCashOnly(order7);
+        orderService.cancel(order7);
+
+        cartService.addItem(memberUser5, product4);
+        Order order8 = orderService.createFromCart(memberUser5);
     }
 
     @Transactional

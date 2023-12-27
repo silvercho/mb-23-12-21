@@ -42,7 +42,6 @@ public class Order extends BaseEntity {
     private LocalDateTime refundDate; // 환불일
 
     public void addItem(CartItem cartItem) {
-
         if (buyer.has(cartItem.getProduct()))
             throw new GlobalException("400-1", "이미 구매한 상품입니다.");
 
@@ -51,8 +50,10 @@ public class Order extends BaseEntity {
                 .product(cartItem.getProduct())
                 .build();
 
+
         orderItems.add(orderItem);
     }
+
     public long calcPayPrice() {
         return orderItems.stream()
                 .mapToLong(OrderItem::getPayPrice)
@@ -61,20 +62,25 @@ public class Order extends BaseEntity {
 
     public void setPaymentDone() {
         payDate = LocalDateTime.now();
+
         orderItems.stream()
                 .forEach(OrderItem::setPaymentDone);
     }
 
-    public void setCancleDone() {
+    public void setCancelDone() {
         cancelDate = LocalDateTime.now();
+
         orderItems.stream()
                 .forEach(OrderItem::setCancelDone);
     }
+
     public void setRefundDone() {
         refundDate = LocalDateTime.now();
+
         orderItems.stream()
                 .forEach(OrderItem::setRefundDone);
     }
+
     public String getName() {
         String name = orderItems.get(0).getProduct().getName();
 
@@ -92,27 +98,52 @@ public class Order extends BaseEntity {
         // LocalDateTime 객체를 문자열로 변환
         return getCreateDate().format(formatter) + (AppConfig.isNotProd() ? "-test-" + UUID.randomUUID().toString() : "") + "__" + getId();
     }
+
     public boolean isPayable() {
         if (payDate != null) return false;
         if (cancelDate != null) return false;
 
         return true;
     }
-    public String getForPrintPayStatus() {
-        if (payDate == null) return "결제대기";
 
-        return "결제완료(" + payDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+    public String getForPrintPayStatus() {
+        if (payDate != null)
+            return "결제완료(" + payDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+
+        if (cancelDate != null) return "-";
+
+        return "결제대기";
     }
 
     public String getForPrintCancelStatus() {
-        if (cancelDate == null) return "취소가능";
+        if (cancelDate != null)
+            return "취소완료(" + cancelDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
 
-        return "취소완료(" + cancelDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+        if (!isCancelable()) return "취소불가능";
+
+        return "취소가능";
     }
 
     public String getForPrintRefundStatus() {
-        if (refundDate == null) return "환불가능";
+        if (refundDate != null)
+            return "환불완료(" + refundDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
 
-        return "환불완료(" + refundDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) + ")";
+        if (payDate == null) return "-";
+        if (!isCancelable()) return "-";
+
+        return "환불가능";
+    }
+
+    public boolean isPayDone() {
+        return payDate != null;
+    }
+
+    public boolean isCancelable() {
+        if (cancelDate != null) return false;
+
+        // 결제일자로부터 1시간 지나면 취소 불가능
+        if (payDate != null && payDate.plusHours(1).isBefore(LocalDateTime.now())) return false;
+
+        return true;
     }
 }

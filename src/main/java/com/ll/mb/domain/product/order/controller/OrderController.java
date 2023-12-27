@@ -6,6 +6,7 @@ import com.ll.mb.domain.product.order.entity.Order;
 import com.ll.mb.domain.product.order.service.OrderService;
 import com.ll.mb.global.app.AppConfig;
 import com.ll.mb.global.rq.Rq;
+import com.ll.mb.standard.util.Ut;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -38,6 +39,30 @@ public class OrderController {
     private final Rq rq;
     private final OrderService orderService;
 
+    @DeleteMapping("/{id}/cancel")
+    @PreAuthorize("isAuthenticated()")
+    public String cancel(
+            @PathVariable long id,
+            String redirectUrl
+    ) {
+        Order order = orderService.findById(id).orElse(null);
+
+        if (order == null) {
+            throw new GlobalException("404", "존재하지 않는 주문입니다.");
+        }
+
+        if (!orderService.canCancel(rq.getMember(), order)) {
+            throw new GlobalException("403", "권한이 없습니다.");
+        }
+
+        orderService.cancel(order);
+
+        if ( Ut.str.isBlank(redirectUrl) ) {
+            redirectUrl = "/order/" + order.getId();
+        }
+
+        return rq.redirect(redirectUrl, "주문이 취소되었습니다.");
+    }
     @GetMapping("/myList")
     @PreAuthorize("isAuthenticated()")
     public String showMyList(
