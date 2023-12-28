@@ -1,8 +1,7 @@
-package com.ll.mb.domain.member.myBook.entity;
+package com.ll.mb.domain.product.product.entity;
 
-import com.ll.mb.domain.book.book.entity.Book;
 import com.ll.mb.domain.member.member.entity.Member;
-import com.ll.mb.global.jpa.BaseTime;
+import com.ll.mb.global.jpa.BaseEntity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
@@ -16,9 +15,9 @@ import static lombok.AccessLevel.PROTECTED;
 @Setter
 @Getter
 @ToString(callSuper = true)
-public class MyBook extends BaseTime {
+public class ProductBookmark extends BaseEntity {
     @ManyToOne
-    private Member owner;
+    private Member member;
     @ManyToOne
-    private Book book;
+    private Product product;
 }

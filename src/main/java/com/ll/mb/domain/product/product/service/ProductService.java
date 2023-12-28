@@ -18,6 +18,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ProductService {
     private final ProductRepository productRepository;
+    private final ProductBookmarkService productBookmarkService;
 
     @Transactional
     public Product createProduct(Book book, boolean published) {
@@ -45,5 +46,21 @@ public class ProductService {
 
     public Page<Product> search(Member maker, Boolean published, List<String> kwTypes, String kw, Pageable pageable) {
         return productRepository.search(maker, published, kwTypes, kw, pageable);
+    }
+    public boolean canBookmark(Member actor, Product product) {
+        if (actor == null) return false;
+
+        return productBookmarkService.canBookmark(actor, product);
+    }
+
+    public boolean canCancelBookmark(Member actor, Product product) {
+        if (actor == null) return false;
+
+        return productBookmarkService.canCancelBookmark(actor, product);
+    }
+
+    @Transactional
+    public void bookmark(Member member, Product product) {
+        productBookmarkService.createProductBookmark(member, product);
     }
 }

@@ -4,7 +4,7 @@ import com.ll.mb.domain.global.exceptions.GlobalException;
 import com.ll.mb.domain.member.member.entity.Member;
 import com.ll.mb.domain.product.cart.entity.CartItem;
 import com.ll.mb.global.app.AppConfig;
-import com.ll.mb.global.jpa.BaseEntity;
+import com.ll.mb.global.jpa.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -28,7 +28,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @ToString(callSuper = true)
 @Table(name = "order_")
-public class Order extends BaseEntity {
+public class Order extends BaseTime {
     @ManyToOne
     private Member buyer;
 

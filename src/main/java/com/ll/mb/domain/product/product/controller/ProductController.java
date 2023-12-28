@@ -1,4 +1,6 @@
 package com.ll.mb.domain.product.product.controller;
+
+import com.ll.mb.domain.global.exceptions.GlobalException;
 import com.ll.mb.domain.product.product.entity.Product;
 import com.ll.mb.domain.product.product.service.ProductService;
 import com.ll.mb.global.rq.Rq;
@@ -10,10 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,5 +56,16 @@ public class ProductController {
     @PreAuthorize("isAuthenticated()")
     public String showDetail(@PathVariable long id) {
         return null;
+    }
+    @PostMapping("/{id}/bookmark")
+    @PreAuthorize("isAuthenticated()")
+    public String bookmark(
+            @PathVariable long id,
+            @RequestParam(defaultValue = "/") String redirectUrl
+    ) {
+        Product product = productService.findById(id).orElseThrow(() -> new GlobalException("400", "존재하지 않는 상품입니다."));
+        productService.bookmark(rq.getMember(), product);
+
+        return rq.redirect(redirectUrl, null);
     }
 }
