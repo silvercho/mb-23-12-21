@@ -24,6 +24,7 @@ public class Product extends BaseEntity {
     private long relId;
     private String name;
     private int price;
+    private boolean published;
 
     public Book getBook() {
         return AppConfig.getEntityManager().getReference(Book.class, relId);
