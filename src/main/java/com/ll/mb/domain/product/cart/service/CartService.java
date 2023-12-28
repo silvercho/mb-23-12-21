@@ -32,7 +32,12 @@ public class CartService {
         return cartItem;
     }
 
-    public List<CartItem> findItemsByBuyer(Member buyer) {
+    @Transactional
+    public void removeItem(Member buyer, Product product) {
+        cartItemRepository.deleteByBuyerAndProduct(buyer, product);
+    }
+
+    public List<CartItem> findByBuyer(Member buyer) {
         return cartItemRepository.findByBuyer(buyer);
     }
 
@@ -40,5 +45,15 @@ public class CartService {
         cartItemRepository.delete(cartItem);
     }
 
+    public boolean canAdd(Member buyer, Product product) {
+        if (buyer == null) return false;
 
+        return !cartItemRepository.existsByBuyerAndProduct(buyer, product);
+    }
+
+    public boolean canRemove(Member buyer, Product product) {
+        if (buyer == null) return false;
+
+        return cartItemRepository.existsByBuyerAndProduct(buyer, product);
+    }
 }
